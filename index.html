@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Barbara Salami — Leading the shift from old playbooks to what comes next.</title>
+<meta name="description" content="Barbara Salami — change leader, AI strategist, keynote speaker, and founder of KAINDLY, Decyd, and ExecIntel." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400;1,8..60,500;1,8..60,600&family=Work+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --oxblood: #8C1C13;
+    --brick:   #BF4342;
+    --sand:    #E7D7C1;
+    --sand-light: #F1E6D4;
+    --taupe:   #A78A7F;
+    --cocoa:   #735751;
+    --cocoa-deep: #5A4540;
+    --cream:   #FAF3E7;
+
+    --font-display: 'Work Sans', -apple-system, sans-serif;
+    --font-body: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+    --font-ui: 'Work Sans', -apple-system, sans-serif;
+
+    --max-width: 1280px;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--sand);
+    color: var(--cocoa-deep);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Subtle paper grain */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
+
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    position: relative;
+    z-index: 2;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .eyebrow {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brick);
+  }
+
+  .display-xl {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.75rem, 6.5vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--oxblood);
+  }
+
+  .display-lg {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.25rem, 4.8vw, 3.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    color: var(--oxblood);
+  }
+
+  .display-md {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--oxblood);
+  }
+
+  .lede {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+    line-height: 1.45;
+    color: var(--cocoa-deep);
+    max-width: 42ch;
+    letter-spacing: -0.005em;
+  }
+  .lede-narrow { max-width: 60ch; }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(231, 215, 193, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(115, 87, 81, 0.12);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 0;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    color: var(--oxblood);
+  }
+  .brand span { color: var(--brick); }
+  .nav-links {
+    display: flex;
+    gap: 2.25rem;
+    list-style: none;
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+  .nav-links a {
+    color: var(--cocoa);
+    transition: color 0.2s ease;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--oxblood); }
+  .nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -4px;
+    height: 1px;
+    width: 0;
+    background: var(--oxblood);
+    transition: width 0.25s ease;
+  }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-cta {
+    background: var(--oxblood);
+    color: var(--sand-light);
+    font-family: var(--font-ui);
+    padding: 0.6rem 1.1rem;
+    border-radius: 2px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .nav-cta:hover { background: var(--brick); transform: translateY(-1px); }
+
+  @media (max-width: 860px) {
+    .nav-links { display: none; }
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 1.6rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-primary {
+    background: var(--oxblood);
+    color: var(--sand-light);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+  }
+  .btn-primary:hover {
+    background: #6E1610;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px rgba(140, 28, 19, 0.4);
+  }
+  .btn-link {
+    color: var(--brick);
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: gap 0.2s ease, color 0.2s ease;
+  }
+  .btn-link:hover {
+    color: var(--oxblood);
+    gap: 0.7rem;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: clamp(3rem, 8vw, 7rem) 0 clamp(4rem, 8vw, 8rem);
+    position: relative;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+  .hero-eyebrow {
+    margin-bottom: 1.75rem;
+    display: inline-block;
+    padding-left: 2.25rem;
+    position: relative;
+  }
+  .hero-eyebrow::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 1.75rem;
+    height: 1px;
+    background: var(--brick);
+  }
+  .hero h1 { margin-bottom: 1.75rem; }
+  .hero .lede { margin-bottom: 2.5rem; }
+  .hero-ctas {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  /* Photo placeholder */
+  .portrait {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background:
+      linear-gradient(135deg, rgba(140,28,19,0.06), rgba(167,138,127,0.18)),
+      var(--sand-light);
+    border: 1px solid rgba(115, 87, 81, 0.18);
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .portrait::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(160deg, transparent 60%, rgba(140, 28, 19, 0.08));
+    pointer-events: none;
+  }
+  .portrait-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+    padding: 2rem;
+    color: var(--cocoa);
+  }
+  .portrait-label .ico {
+    width: 44px; height: 44px;
+    border: 1px solid var(--cocoa);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .portrait-label small {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cocoa);
+    font-weight: 600;
+  }
+  .portrait-label p {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--cocoa-deep);
+    max-width: 22ch;
+  }
+
+  .portrait-frame {
+    position: relative;
+  }
+  .portrait-frame::after {
+    content: "BARBARA SALAMI";
+    position: absolute;
+    bottom: -1.5rem;
+    right: 0;
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--taupe);
+    font-weight: 600;
+  }
+  .portrait-frame::before {
+    content: "01";
+    position: absolute;
+    top: -2.5rem;
+    left: 0;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--brick);
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .portrait-frame { max-width: 380px; margin: 0 auto; }
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    position: relative;
+  }
+  .section-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(115, 87, 81, 0.18);
+  }
+  .section-index {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--brick);
+    line-height: 1;
+  }
+  .section-head .meta { padding-bottom: 0.4rem; }
+  .section-head .eyebrow { margin-bottom: 0.75rem; display: block; }
+
+  /* ---------- VENTURES ---------- */
+  .ventures-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .venture {
+    background: var(--cream);
+    border: 1px solid rgba(115, 87, 81, 0.14);
+    padding: 2.25rem 2rem 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .venture::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 0;
+    height: 3px;
+    background: var(--oxblood);
+    transition: width 0.35s ease;
+  }
+  .venture:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px -18px rgba(115, 87, 81, 0.35);
+    border-color: rgba(140, 28, 19, 0.3);
+  }
+  .venture:hover::before { width: 100%; }
+  .venture-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: var(--oxblood);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .venture-tagline {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--brick);
+    font-size: 0.98rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.3;
+  }
+  .venture p {
+    color: var(--cocoa);
+    margin-bottom: 1.75rem;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 860px) {
+    .ventures-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- SPEAKING ---------- */
+  .speaking { background: linear-gradient(180deg, var(--sand) 0%, var(--sand-light) 100%); }
+  .talks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+  }
+  .talk {
+    background: var(--sand);
+    padding: 2rem;
+    border-left: 3px solid var(--brick);
+    position: relative;
+  }
+  .talk-number {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: var(--brick);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .talk h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--oxblood);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.85rem;
+  }
+  .talk p { color: var(--cocoa); font-size: 0.98rem; line-height: 1.55; }
+
+  .engagements {
+    background: var(--cream);
+    padding: 2.25rem 2.5rem;
+    border: 1px solid rgba(115, 87, 81, 0.14);
+    margin-bottom: 2.5rem;
+  }
+  .engagements h4 {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brick);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .engagements-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    color: var(--cocoa-deep);
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+  .engagements-list span { position: relative; }
+  .engagements-list span:not(:last-child)::after {
+    content: "·";
+    margin-left: 1.25rem;
+    color: var(--taupe);
+  }
+
+  .speaking-ctas { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+
+  @media (max-width: 860px) {
+    .talks { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- ADVISORY ---------- */
+  .advisory-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .formats { display: grid; gap: 1rem; }
+  .format {
+    padding: 1.5rem 1.75rem;
+    border: 1px solid rgba(115, 87, 81, 0.18);
+    background: var(--cream);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .format:hover {
+    border-color: var(--brick);
+    background: #FCF6EA;
+  }
+  .format-num {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--brick);
+    font-size: 1.15rem;
+    padding-top: 0.1rem;
+  }
+  .format h4 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--oxblood);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.01em;
+  }
+  .format p { color: var(--cocoa); font-size: 0.98rem; line-height: 1.55; }
+
+  .frameworks {
+    background: var(--oxblood);
+    color: var(--sand-light);
+    padding: 2.5rem 2.25rem;
+    position: relative;
+  }
+  .frameworks h4 {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sand);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    opacity: 0.85;
+  }
+  .frameworks ul {
+    list-style: none;
+    display: grid;
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+  }
+  .frameworks li {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    border-bottom: 1px solid rgba(231, 215, 193, 0.15);
+    padding-bottom: 0.85rem;
+  }
+  .frameworks li:last-child { border-bottom: none; }
+  .frameworks li em {
+    color: var(--sand);
+    font-style: italic;
+    opacity: 0.78;
+    font-size: 0.95rem;
+    display: block;
+    margin-top: 0.3rem;
+    font-family: var(--font-body);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .advisory-cta { margin-top: 2rem; }
+
+  @media (max-width: 860px) {
+    .advisory-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- NEWSLETTER ---------- */
+  .newsletter { background: var(--sand-light); }
+  .articles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .article {
+    background: var(--sand);
+    padding: 2rem 1.85rem;
+    border-top: 2px solid var(--cocoa);
+    transition: border-color 0.25s ease, transform 0.25s ease;
+    cursor: pointer;
+  }
+  .article:hover {
+    border-color: var(--oxblood);
+    transform: translateY(-3px);
+  }
+  .article-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+  .article h3 {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--oxblood);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+  .article p { color: var(--cocoa); font-size: 0.98rem; line-height: 1.55; }
+
+  .newsletter-ctas { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+
+  @media (max-width: 860px) {
+    .articles { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+  .about-portrait {
+    aspect-ratio: 3 / 4;
+    background:
+      linear-gradient(160deg, rgba(140,28,19,0.05), rgba(167,138,127,0.2)),
+      var(--cream);
+    border: 1px solid rgba(115, 87, 81, 0.18);
+    position: relative;
+    overflow: hidden;
+  }
+  .about-text p {
+    color: var(--cocoa-deep);
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    max-width: 60ch;
+  }
+  .pull-quote {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1.3;
+    color: var(--oxblood);
+    border-left: 3px solid var(--brick);
+    padding: 0.5rem 0 0.5rem 1.75rem;
+    margin: 2.5rem 0 0;
+    max-width: 32ch;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 860px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-portrait { max-width: 360px; margin: 0 auto; }
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact { background: var(--cocoa-deep); color: var(--sand-light); }
+  .contact .eyebrow { color: var(--sand); opacity: 0.75; }
+  .contact .display-lg, .contact .section-index { color: var(--sand-light); }
+  .contact .section-index { color: var(--brick); }
+  .contact .section-head { border-bottom-color: rgba(231, 215, 193, 0.15); }
+
+  .pathways {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .pathway {
+    border: 1px solid rgba(231, 215, 193, 0.15);
+    padding: 2.25rem 2rem;
+    transition: background 0.25s ease, border-color 0.25s ease;
+    cursor: pointer;
+  }
+  .pathway:hover {
+    background: rgba(231, 215, 193, 0.06);
+    border-color: var(--brick);
+  }
+  .pathway-label {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brick);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .pathway h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--sand-light);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.015em;
+  }
+  .pathway p {
+    color: rgba(231, 215, 193, 0.7);
+    font-size: 0.98rem;
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+  }
+  .pathway .btn-link { color: var(--brick); }
+  .pathway:hover .btn-link { color: var(--sand-light); }
+
+  @media (max-width: 860px) {
+    .pathways { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    background: var(--cocoa-deep);
+    color: rgba(231, 215, 193, 0.7);
+    padding: 3rem 0 2.5rem;
+    border-top: 1px solid rgba(231, 215, 193, 0.1);
+    font-size: 0.88rem;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+    align-items: start;
+  }
+  .footer-brand {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    color: var(--sand-light);
+    margin-bottom: 0.85rem;
+  }
+  .footer-ventures {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    color: var(--sand);
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1rem;
+  }
+  .footer-ventures span:not(:last-child)::after {
+    content: " ·";
+    margin-left: 0.6rem;
+    color: var(--brick);
+  }
+  footer h5 {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brick);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .footer-links {
+    list-style: none;
+    display: grid;
+    gap: 0.6rem;
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+  }
+  .footer-links a {
+    color: rgba(231, 215, 193, 0.75);
+    transition: color 0.2s ease;
+  }
+  .footer-links a:hover { color: var(--sand-light); }
+
+  .subscribe {
+    display: flex;
+    gap: 0.5rem;
+    border: 1px solid rgba(231, 215, 193, 0.25);
+    padding: 0.4rem;
+    margin-top: 0.75rem;
+  }
+  .subscribe input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.7rem 0.85rem;
+    color: var(--sand-light);
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    outline: none;
+  }
+  .subscribe input::placeholder { color: rgba(231, 215, 193, 0.45); }
+  .subscribe button {
+    background: var(--brick);
+    color: var(--sand-light);
+    border: none;
+    padding: 0.7rem 1.1rem;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .subscribe button:hover { background: var(--oxblood); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(231, 215, 193, 0.1);
+    padding-top: 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: rgba(231, 215, 193, 0.55);
+  }
+
+  @media (max-width: 860px) {
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  /* ---------- ENTRANCE ANIMATION ---------- */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    animation: rise 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .reveal-1 { animation-delay: 0.05s; }
+  .reveal-2 { animation-delay: 0.18s; }
+  .reveal-3 { animation-delay: 0.32s; }
+  .reveal-4 { animation-delay: 0.46s; }
+  .reveal-5 { animation-delay: 0.6s; }
+
+  /* Scroll-triggered fade for sections */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="brand">Barbara<span>.</span>Salami</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#ventures">Ventures</a></li>
+      <li><a href="#newsletter">Newsletter</a></li>
+      <li><a href="#speaking">Speaking</a></li>
+      <li><a href="#advisory">Advisory</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Work With Barbara</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow hero-eyebrow reveal reveal-1">I help leaders lead AI — not chase it.</span>
+        <h1 class="display-xl reveal reveal-2">
+          Leading the shift from old playbooks to what comes next.
+        </h1>
+        <p class="lede reveal reveal-3">
+          Two decades inside the world's largest pharma and biotech companies. Three ventures building the future of AI fluency, intelligence, and executive leadership. One conviction: the future belongs to those willing to learn before required to.
+        </p>
+        <div class="hero-ctas reveal reveal-4">
+          <a href="#contact" class="btn btn-primary">
+            Book Barbara to Speak
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#advisory" class="btn-link">
+            Explore advisory engagements
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="portrait-frame reveal reveal-5">
+        <div class="portrait">
+          <div class="portrait-label">
+            <div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="0"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="m21 15-5-5L5 21"/>
+              </svg>
+            </div>
+            <small>Portrait Placeholder</small>
+            <p>Hero image — shoulders and up, eye contact, neutral background.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VENTURES -->
+<section id="ventures" class="fade-in">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-index">02</div>
+      <div class="meta">
+        <span class="eyebrow">Three ventures · One vision</span>
+        <h2 class="display-lg">Building the infrastructure for human-led AI.</h2>
+      </div>
+    </div>
+    <p class="lede" style="margin-bottom: 3rem; max-width: 70ch;">
+      Each venture solves a different layer of the same problem: how leaders, organizations, and decision-makers stay ahead of AI without losing what makes them human.
+    </p>
+    <div class="ventures-grid">
+      <div class="venture">
+        <div class="venture-name">KAINDLY</div>
+        <div class="venture-tagline">Lead AI. Don't Chase It.™</div>
+        <p>AI fluency and adoption accelerator for pharma, biotech, and healthcare leaders ready to operationalize judgment at the speed of the technology.</p>
+        <a href="#" class="btn-link">Visit KAINDLY <span>→</span></a>
+      </div>
+      <div class="venture">
+        <div class="venture-name">Decyd</div>
+        <div class="venture-tagline">Strategic intelligence at executive speed.</div>
+        <p>Biopharma strategic intelligence platform built on proprietary pattern recognition and decision intelligence frameworks for commercial and clinical leaders.</p>
+        <a href="#" class="btn-link">Visit Decyd <span>→</span></a>
+      </div>
+      <div class="venture">
+        <div class="venture-name">ExecIntel</div>
+        <div class="venture-tagline">Signal, not noise.</div>
+        <p>Executive intelligence briefings and advisory practice built for C-suite leaders who need clarity at the moments that matter most.</p>
+        <a href="#" class="btn-link">Visit ExecIntel <span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPEAKING -->
+<section id="speaking" class="speaking fade-in">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-index">03</div>
+      <div class="meta">
+        <span class="eyebrow">Keynotes · Panels · Workshops</span>
+        <h2 class="display-lg">The keynote your audience will quote on Monday morning.</h2>
+      </div>
+    </div>
+    <p class="lede" style="margin-bottom: 3rem; max-width: 70ch;">
+      Barbara delivers keynotes and workshops that turn AI anxiety into AI advantage — trusted by executive audiences across pharma, biotech, healthcare, and innovation communities to translate complex shifts into clear, actionable leadership.
+    </p>
+
+    <div class="talks">
+      <div class="talk">
+        <span class="talk-number">Signature Talk i.</span>
+        <h3>Lead AI. Don't Chase It.</h3>
+        <p>The leadership mindset shift required to move from reactive AI adoption to strategic AI fluency.</p>
+      </div>
+      <div class="talk">
+        <span class="talk-number">Signature Talk ii.</span>
+        <h3>The Coordination Shift</h3>
+        <p>Why surviving the next decade of pharma and biotech depends less on technology and more on how organizations decide, align, and act.</p>
+      </div>
+      <div class="talk">
+        <span class="talk-number">Signature Talk iii.</span>
+        <h3>Kindness as a Strategic Capability</h3>
+        <p>The contrarian case for kindness as the highest-leverage skill in the AI era — and how leaders can operationalize it.</p>
+      </div>
+    </div>
+
+    <div class="engagements">
+      <h4>Recent &amp; Upcoming</h4>
+      <div class="engagements-list">
+        <span>NACDA Convention</span>
+        <span>Mandalay Bay</span>
+        <span>Africa Healthcare Conference</span>
+        <span>HumanX</span>
+        <span>AI Junto</span>
+        <span>Silverside AI Marketing Summit</span>
+        <span>Klick Health</span>
+        <span>PA Consulting</span>
+      </div>
+    </div>
+
+    <div class="speaking-ctas">
+      <a href="#contact" class="btn btn-primary">
+        Inquire about speaking
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="btn-link">Download speaker one-pager <span>→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ADVISORY -->
+<section id="advisory" class="fade-in">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-index">04</div>
+      <div class="meta">
+        <span class="eyebrow">Advisory · Boards · Executive coaching</span>
+        <h2 class="display-lg">I help leaders lead AI — not chase it.</h2>
+      </div>
+    </div>
+    <p class="lede" style="margin-bottom: 3rem; max-width: 70ch;">
+      Barbara serves on advisory boards and partners with executive teams navigating AI transformation, commercial innovation, and digital strategy. Her advisory work draws on twenty-plus years inside GSK, Moderna, Novo Nordisk, AstraZeneca, and Bristol Myers Squibb — and on proprietary frameworks now used by leaders across the industry.
+    </p>
+
+    <div class="advisory-grid">
+      <div class="formats">
+        <div class="format">
+          <div class="format-num">i.</div>
+          <div>
+            <h4>Board Advisory</h4>
+            <p>Strategic counsel for boards navigating AI, digital transformation, and commercial innovation.</p>
+          </div>
+        </div>
+        <div class="format">
+          <div class="format-num">ii.</div>
+          <div>
+            <h4>Executive Coaching</h4>
+            <p>One-on-one engagements for senior leaders sharpening their AI fluency and career strategy.</p>
+          </div>
+        </div>
+        <div class="format">
+          <div class="format-num">iii.</div>
+          <div>
+            <h4>Organizational Advisory</h4>
+            <p>Partnerships with executive teams scaling AI adoption across complex enterprises.</p>
+          </div>
+        </div>
+        <a href="#contact" class="btn btn-primary advisory-cta">
+          Explore advisory engagements
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <aside class="frameworks">
+        <h4>Proprietary Frameworks</h4>
+        <ul>
+          <li>CRAFT <em>Prompting and structured thinking architecture</em></li>
+          <li>GUIDES-C <em>Governance and adoption scaffold</em></li>
+          <li>The Four Zones <em>Protect · Augment · Accelerate · Automate</em></li>
+          <li>Vulnerable Adopter™ <em>Identifying high-risk adoption profiles</em></li>
+          <li>The Watermelon Effect <em>Surface metrics vs. underlying truth</em></li>
+          <li>The Five Frictions <em>What stalls real AI adoption</em></li>
+          <li>Kindness Score <em>Strategic capability index</em></li>
+          <li>The 4 Cs Journey <em>Confusion → Confidence → Competence → Competitive Advantage</em></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter" class="newsletter fade-in">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-index">05</div>
+      <div class="meta">
+        <span class="eyebrow">Writing · Insight · Weekly</span>
+        <h2 class="display-lg">Field notes from the front lines of AI leadership.</h2>
+      </div>
+    </div>
+    <p class="lede" style="margin-bottom: 3rem; max-width: 70ch;">
+      Barbara writes for leaders who want signal over noise — essays on AI fluency, transformation, judgment, and what it actually takes to lead in the AI era. No hype. No hedging. Just the thinking.
+    </p>
+
+    <div class="articles">
+      <article class="article">
+        <div class="article-meta"><span>Essay</span><span>6 min</span></div>
+        <h3>The Summer I Became a Builder</h3>
+        <p>On leaving twenty years of pharma to build three companies — and what that decision revealed about the work ahead.</p>
+      </article>
+      <article class="article">
+        <div class="article-meta"><span>Built to Survive · Pt. 1</span><span>8 min</span></div>
+        <h3>The Scourge Tax</h3>
+        <p>The hidden cost organizations pay when they treat AI as an IT problem rather than a leadership one.</p>
+      </article>
+      <article class="article">
+        <div class="article-meta"><span>Built to Survive · Pt. 2</span><span>9 min</span></div>
+        <h3>The Coordination Shift</h3>
+        <p>Why the next decade of pharma will be won by coordinators, not technologists — and what that means for senior leaders today.</p>
+      </article>
+    </div>
+
+    <div class="newsletter-ctas">
+      <a href="#" class="btn btn-primary">
+        Subscribe to the newsletter
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="btn-link">Read the full archive <span>→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="fade-in">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-index">06</div>
+      <div class="meta">
+        <span class="eyebrow">About Barbara</span>
+        <h2 class="display-lg">A systems thinker. A builder. A leader who chose to bet on what's next.</h2>
+      </div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-portrait">
+        <div class="portrait-label">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+            </svg>
+          </div>
+          <small>Portrait Placeholder</small>
+          <p>Secondary image — working shot, on stage, or candid.</p>
+        </div>
+      </div>
+
+      <div class="about-text">
+        <p>
+          Barbara Salami spent twenty-plus years leading commercial innovation and digital transformation at the world's largest pharmaceutical and biotech organizations — GSK, Moderna, Novo Nordisk, AstraZeneca, and Bristol Myers Squibb. In May 2022, an early encounter with generative AI reshaped how she saw the future of leadership, work, and human judgment. By 2024, she had stepped out of the corporate path to build what she believed leaders actually needed.
+        </p>
+        <p>
+          Today, Barbara is the founder and CEO of KAINDLY, an AI fluency and adoption accelerator. She is also building Decyd, a biopharma strategic intelligence platform, and ExecIntel, an executive intelligence briefing practice. She serves on multiple AI advisory boards, keynotes industry conferences, and co-founded STEM Dragons — an afterschool coding and robotics program rooted in her conviction that AI fluency is an access issue, not a skills gap.
+        </p>
+        <blockquote class="pull-quote">
+          "The future belongs to those willing to learn before required to."
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact fade-in">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-index">07</div>
+      <div class="meta">
+        <span class="eyebrow">Work with Barbara</span>
+        <h2 class="display-lg">Let's build what comes next.</h2>
+      </div>
+    </div>
+
+    <div class="pathways">
+      <div class="pathway">
+        <div class="pathway-label">Speaking inquiries</div>
+        <h3>Keynotes &amp; workshops</h3>
+        <p>Keynotes, panels, executive workshops, and offsites for organizations navigating AI and transformation.</p>
+        <a href="mailto:hello@barbarasalami.com" class="btn-link">Inquire <span>→</span></a>
+      </div>
+      <div class="pathway">
+        <div class="pathway-label">Advisory &amp; boards</div>
+        <h3>Strategic counsel</h3>
+        <p>Advisory engagements with executive teams and board work with companies building the next generation of healthcare and AI.</p>
+        <a href="mailto:advisory@barbarasalami.com" class="btn-link">Explore <span>→</span></a>
+      </div>
+      <div class="pathway">
+        <div class="pathway-label">General inquiry</div>
+        <h3>Press &amp; partnerships</h3>
+        <p>Media requests, press inquiries, partnerships, and everything else worth a conversation.</p>
+        <a href="mailto:hello@barbarasalami.com" class="btn-link">Reach out <span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Barbara Salami</div>
+        <p style="margin-bottom: 1.25rem; max-width: 42ch;">
+          Founder &amp; CEO of KAINDLY. Founder of Decyd and ExecIntel. AI advisor, keynote speaker, and writer at the front lines of leadership and intelligence.
+        </p>
+        <div class="footer-ventures">
+          <span>KAINDLY</span><span>Decyd</span><span>ExecIntel</span>
+        </div>
+      </div>
+      <div>
+        <h5>Navigate</h5>
+        <ul class="footer-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#ventures">Ventures</a></li>
+          <li><a href="#newsletter">Newsletter</a></li>
+          <li><a href="#speaking">Speaking</a></li>
+          <li><a href="#advisory">Advisory</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>The newsletter</h5>
+        <p style="font-size: 0.88rem;">Field notes for leaders, weekly.</p>
+        <div class="subscribe">
+          <input type="email" placeholder="your@email.com" aria-label="Email" />
+          <button>Subscribe</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© <span id="year"></span> Barbara Salami. All rights reserved.</div>
+      <div style="display: flex; gap: 1.5rem;">
+        <a href="#" style="color: inherit;">LinkedIn</a>
+        <a href="mailto:hello@barbarasalami.com" style="color: inherit;">Email</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Scroll-triggered fade-ins
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+</script>
+
+</body>
+</html>
