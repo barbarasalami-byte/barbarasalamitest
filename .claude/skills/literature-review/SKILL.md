@@ -121,6 +121,12 @@ This is not optional, and it is where these reports fail.
 If you cannot verify an identifier, say so inline rather than dropping the
 caveat: `(citation unverified — retrieved via web summary, not the record)`.
 
+Where the project sets its own wording for absent or unverified evidence, use
+that wording instead of inventing your own. If no convention is set, write
+**Evidence pending** when a search has not yet been run or has not returned,
+and **No public precedent available** when a search ran and returned nothing.
+Never fill the gap with a plausible-looking citation.
+
 ## Output template
 
 ```markdown
