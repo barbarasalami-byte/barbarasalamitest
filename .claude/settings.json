@@ -9,5 +9,15 @@
   },
   "enabledPlugins": {
     "ecc@ecc": true
+  },
+  "pluginConfigs": {
+    "ecc@ecc": {
+      "options": {
+        "hooks_enabled": false
+      }
+    }
+  },
+  "env": {
+    "ECC_HOOKS_ENABLED": "false"
   }
 }
