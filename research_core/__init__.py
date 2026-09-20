@@ -1,14 +1,31 @@
-from .agent import LiteratureReviewer, ReviewResult, build_system_prompt
-from .pubmed import Article, PubMed, SearchResult
-from .verify import CitationAudit, audit_citations
+from .agent import Researcher, ReviewResult, SearchLogEntry, build_system_prompt
+from .sources import (
+    Record,
+    SearchOutcome,
+    SourceProvider,
+    all_sources,
+    available_sources,
+    register,
+    unavailable_sources,
+    unregister,
+)
+from .verify import Citation, CitationAudit, audit_citations, extract_citations
 
 __all__ = [
-    "Article",
+    "Citation",
     "CitationAudit",
-    "LiteratureReviewer",
-    "PubMed",
+    "Record",
+    "Researcher",
     "ReviewResult",
-    "SearchResult",
+    "SearchLogEntry",
+    "SearchOutcome",
+    "SourceProvider",
+    "all_sources",
     "audit_citations",
+    "available_sources",
     "build_system_prompt",
+    "extract_citations",
+    "register",
+    "unavailable_sources",
+    "unregister",
 ]

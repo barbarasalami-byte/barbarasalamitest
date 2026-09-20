@@ -1,8 +1,8 @@
-"""Literature-review agent: vendored ECC methodology + real PubMed tool calls.
+"""Source-agnostic literature reviewer.
 
-The prompts under `prompts/` are adapted from ECC (MIT) - see prompts/NOTICE.md.
-They are plain Markdown on purpose: edit them to tune behavior, no code change
-needed.
+The agent reads the source registry at construction time and builds its tools,
+its prompt guidance, and its citation rules from whatever is registered. Adding
+a source changes nothing here.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from pathlib import Path
 import anthropic
 from anthropic import beta_tool
 
-from .pubmed import Article, PubMed
+from .sources import Record, SourceProvider, available_sources, unavailable_sources
 
 log = logging.getLogger(__name__)
 
@@ -24,32 +24,11 @@ MODEL = "claude-opus-5"
 PROMPTS = Path(__file__).parent / "prompts"
 
 
-def _load(name: str) -> str:
-    return (PROMPTS / name).read_text(encoding="utf-8")
-
-
-def build_system_prompt() -> str:
-    """Assemble the stable system prompt.
-
-    Everything here must be byte-stable across requests - it is the cached
-    prefix. Anything varying per request (the question, today's date) belongs
-    in the user message instead.
-    """
-    return "\n\n---\n\n".join(
-        [
-            "You are a biomedical literature research assistant. You search "
-            "PubMed through the tools provided and synthesize what you find. "
-            "You never state a finding you did not retrieve.",
-            _load("pubmed_query.md"),
-            _load("literature_review.md"),
-        ]
-    )
-
-
 @dataclass
 class SearchLogEntry:
+    source: str
     query: str
-    count: int
+    total_matches: int
     returned: int
     searched_at: str
 
@@ -57,99 +36,157 @@ class SearchLogEntry:
 @dataclass
 class ReviewResult:
     report: str
-    search_log: list[SearchLogEntry]
-    articles: dict[str, Article]
+    search_log: list[SearchLogEntry] = field(default_factory=list)
+    records: dict[str, Record] = field(default_factory=dict)
+    """Everything retrieved this run, keyed by 'source:id'."""
+    sources_used: list[str] = field(default_factory=list)
+    sources_unavailable: dict[str, str] = field(default_factory=dict)
     usage: dict[str, int] = field(default_factory=dict)
 
-    @property
-    def cited_pmids(self) -> set[str]:
-        """PMIDs that were actually retrieved during this run."""
-        return set(self.articles)
+    def retrieved_ids(self, source: str) -> set[str]:
+        return {r.id for r in self.records.values() if r.source == source}
 
 
-class LiteratureReviewer:
+def build_system_prompt(providers: dict[str, SourceProvider]) -> str:
+    """Assemble the prompt from the protocol plus the registered sources.
+
+    Only the syntax guidance for sources that are actually available gets
+    injected - the model is never told how to query a corpus it cannot reach.
+    Keep this byte-stable across requests so the cached prefix holds.
+    """
+    protocol = (PROMPTS / "review_protocol.md").read_text(encoding="utf-8")
+
+    if providers:
+        roster = "\n".join(
+            f"- `{name}` (identifier: {p.id_label}) - tools: "
+            f"`search_{name}`, `fetch_{name}`"
+            for name, p in sorted(providers.items())
+        )
+        guides = "\n\n".join(
+            p.syntax_guide for _, p in sorted(providers.items()) if p.syntax_guide
+        )
+        sources_section = (
+            f"## Sources available in this session\n\n{roster}\n\n"
+            "Search at least two independent sources before any broad claim. "
+            "If only one is available, scope the claim to that source "
+            "explicitly.\n\n"
+            f"## Source query syntax\n\n{guides}"
+        )
+    else:
+        sources_section = (
+            "## Sources available in this session\n\n"
+            "**None.** No retrieval tool is available. Say so and stop - do not "
+            "answer from memory."
+        )
+
+    return "\n\n---\n\n".join(
+        [
+            "You are a research assistant. You search the sources provided as "
+            "tools and synthesize what you retrieve. You never state a finding "
+            "you did not retrieve, and never cite an identifier that did not "
+            "come back from a tool call.",
+            protocol,
+            sources_section,
+        ]
+    )
+
+
+def _make_tools(provider: SourceProvider, run: ReviewResult) -> list:
+    """Build the search/fetch pair for one source, bound to this run."""
+    name, label = provider.name, provider.id_label
+
+    def search(query: str, max_results: int = 25) -> str:
+        try:
+            outcome = provider.search(query, max_results)
+        except ValueError as exc:
+            return f"Query rejected: {exc}"
+        except Exception as exc:  # a dead source must not kill the run
+            log.warning("Source %r search failed: %s", name, exc)
+            return f"Source {name} is unreachable ({exc}). Report this and try another."
+
+        run.search_log.append(
+            SearchLogEntry(
+                source=name,
+                query=outcome.query,
+                total_matches=outcome.total_matches,
+                returned=len(outcome.records),
+                searched_at=outcome.searched_at,
+            )
+        )
+        for record in outcome.records:
+            run.records[record.citation_key()] = record
+        if name not in run.sources_used:
+            run.sources_used.append(name)
+
+        if not outcome.records:
+            return f"0 results for {query!r}. Report the empty search, then revise."
+        return json.dumps(
+            {
+                "total_matches": outcome.total_matches,
+                "returned": len(outcome.records),
+                "results": [
+                    {
+                        label.lower(): r.id,
+                        "title": r.title,
+                        "venue": r.venue,
+                        "year": r.year,
+                        "types": r.doc_types,
+                        "preprint": r.is_preprint,
+                    }
+                    for r in outcome.records
+                ],
+            },
+            indent=2,
+        )
+
+    search.__name__ = f"search_{name}"
+    search.__doc__ = f"""Search {name} and return matching records.
+
+    Args:
+        query: A {name} query string. Follow the {name} syntax in the system prompt.
+        max_results: Maximum records to return (1-100).
+    """
+
+    def fetch(ids: list[str]) -> str:
+        try:
+            records = provider.fetch(ids[:20])
+        except Exception as exc:
+            log.warning("Source %r fetch failed: %s", name, exc)
+            return f"Source {name} is unreachable ({exc})."
+        for record in records:
+            run.records[record.citation_key()] = record
+        if not records:
+            return f"No {name} records found for those {label}s."
+        return "\n\n".join(
+            f"{label} {r.id} | {r.summary_line()}\n{r.title}\n"
+            f"Authors: {', '.join(r.authors[:8]) or 'n/a'}\n\n"
+            f"{r.abstract or '(no abstract available)'}"
+            for r in records
+        )
+
+    fetch.__name__ = f"fetch_{name}"
+    fetch.__doc__ = f"""Fetch full records from {name} for specific identifiers.
+
+    Args:
+        ids: {label} values from a prior search_{name} call, at most 20.
+    """
+
+    return [beta_tool(search), beta_tool(fetch)]
+
+
+class Researcher:
+    """Runs a review over every available source."""
+
     def __init__(
         self,
         client: anthropic.Anthropic | None = None,
-        pubmed: PubMed | None = None,
+        providers: dict[str, SourceProvider] | None = None,
         model: str = MODEL,
     ) -> None:
         self.client = client or anthropic.Anthropic()
-        self.pubmed = pubmed or PubMed()
+        self.providers = available_sources() if providers is None else providers
         self.model = model
-        self.system_prompt = build_system_prompt()
-
-    def _tools(self, run: ReviewResult) -> list:
-        """Build tools bound to this run, so retrievals are recorded."""
-        pubmed = self.pubmed
-
-        @beta_tool
-        def search_pubmed(query: str, max_results: int = 25) -> str:
-            """Search PubMed and return matching PMIDs with titles.
-
-            Args:
-                query: A PubMed query string using standard field tags, e.g.
-                    'semaglutide[tiab] AND randomized controlled trial[pt]'.
-                max_results: Maximum PMIDs to return (1-100).
-            """
-            try:
-                result = pubmed.esearch(query, retmax=max(1, min(max_results, 100)))
-            except ValueError as exc:
-                return f"Query rejected: {exc}"
-
-            run.search_log.append(
-                SearchLogEntry(
-                    query=result.query,
-                    count=result.count,
-                    returned=len(result.pmids),
-                    searched_at=result.searched_at,
-                )
-            )
-            if not result.pmids:
-                return f"0 results for {query!r}. Revise and report the empty search."
-
-            articles = pubmed.efetch(result.pmids)
-            for article in articles:
-                run.articles[article.pmid] = article
-            return json.dumps(
-                {
-                    "total_matches": result.count,
-                    "returned": len(articles),
-                    "results": [
-                        {
-                            "pmid": a.pmid,
-                            "title": a.title,
-                            "journal": a.journal,
-                            "year": a.year,
-                            "publication_types": a.publication_types,
-                        }
-                        for a in articles
-                    ],
-                },
-                indent=2,
-            )
-
-        @beta_tool
-        def fetch_abstracts(pmids: list[str]) -> str:
-            """Fetch full abstracts for specific PMIDs found via search_pubmed.
-
-            Args:
-                pmids: PMIDs to retrieve, at most 20 per call.
-            """
-            articles = pubmed.efetch(pmids[:20])
-            for article in articles:
-                run.articles[article.pmid] = article
-            if not articles:
-                return "No records found for those PMIDs."
-            return "\n\n".join(
-                f"PMID {a.pmid} | {a.journal} {a.year} | {'; '.join(a.publication_types)}\n"
-                f"{a.title}\n"
-                f"Authors: {', '.join(a.authors[:8]) or 'n/a'}\n\n"
-                f"{a.abstract or '(no abstract)'}"
-                for a in articles
-            )
-
-        return [search_pubmed, fetch_abstracts]
+        self.system_prompt = build_system_prompt(self.providers)
 
     def review(
         self,
@@ -157,16 +194,23 @@ class LiteratureReviewer:
         review_type: str = "scoping",
         max_tokens: int = 16000,
     ) -> ReviewResult:
-        """Run a literature review and return the report plus its evidence trail."""
-        run = ReviewResult(report="", search_log=[], articles={})
+        run = ReviewResult(report="", sources_unavailable=unavailable_sources())
+
+        if not self.providers:
+            raise RuntimeError(
+                "No research sources available. Register at least one provider; "
+                f"unavailable: {run.sources_unavailable or 'none registered'}"
+            )
+
+        tools = [t for p in self.providers.values() for t in _make_tools(p, run)]
 
         request = (
             f"Research question: {question}\n\n"
             f"Review type: {review_type}\n"
             f"Today's date: {date.today().isoformat()}\n\n"
-            "Search PubMed, screen what you find, and produce the review using "
-            "the output template. Report every search string verbatim in the "
-            "Search Log."
+            "Search the available sources, screen what you find, and produce the "
+            "review using the output template. Report every search string "
+            "verbatim in the Search Log."
         )
 
         runner = self.client.beta.messages.tool_runner(
@@ -180,7 +224,7 @@ class LiteratureReviewer:
                     "cache_control": {"type": "ephemeral"},
                 }
             ],
-            tools=self._tools(run),
+            tools=tools,
             messages=[{"role": "user", "content": request}],
         )
 
@@ -195,9 +239,7 @@ class LiteratureReviewer:
                     "cache_read_input_tokens",
                     "cache_creation_input_tokens",
                 ):
-                    run.usage[key] = run.usage.get(key, 0) + (
-                        getattr(usage, key, 0) or 0
-                    )
+                    run.usage[key] = run.usage.get(key, 0) + (getattr(usage, key, 0) or 0)
 
         if final is None:
             raise RuntimeError("Tool runner produced no messages")
@@ -206,7 +248,5 @@ class LiteratureReviewer:
         if final.stop_reason == "refusal":
             raise RuntimeError(f"Request declined: {final.stop_details}")
 
-        run.report = "\n".join(
-            block.text for block in final.content if block.type == "text"
-        )
+        run.report = "\n".join(b.text for b in final.content if b.type == "text")
         return run

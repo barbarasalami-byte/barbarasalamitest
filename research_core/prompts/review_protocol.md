@@ -33,7 +33,8 @@ Every search pass is logged verbatim:
 
 ### 4. Deduplicate
 
-In order: DOI → PMID → exact title → normalized title + first author + year.
+In order: DOI → source-native identifier (PMID, arXiv ID, patent number,
+accession) → exact title → normalized title + first author + year.
 Record how many duplicates were removed.
 
 ### 5. Screen in stages
@@ -60,7 +61,9 @@ Separate every claim by confidence:
 
 ### 8. Verify citations
 
-Verify each PMID or DOI. Do not cite a paper for a claim it does not make.
+Every identifier you cite must have come back from a tool call in this
+session. If you cannot point to the call that returned it, remove it.
+Do not cite a source for a claim it does not make.
 Mark preprints as preprints. Distinguish reviews from primary evidence.
 
 ## Output template
