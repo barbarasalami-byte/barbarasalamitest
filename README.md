@@ -25,6 +25,8 @@ Methodology adapted from [ECC](https://github.com/affaan-m/ECC) (MIT) — see th
 
 ## Tests
 
+    pip install -r requirements.txt
     python -m unittest discover -s tests
 
-Offline only: no network, no API key.
+Offline only: no network, no API key. CI runs this on every push and pull
+request across Python 3.10-3.13 (`.github/workflows/tests.yml`).
