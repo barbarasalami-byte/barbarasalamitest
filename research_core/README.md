@@ -7,8 +7,16 @@ checks from whatever is registered.
     prompts/review_protocol.md   the method - names no specific database
     sources/base.py              the SourceProvider contract
     sources/registry.py          registration and availability
+    sources/rest.py              shared JSON-over-HTTP base
+    sources/VERIFICATION.md      what is and is not proven per source
     sources/pubmed.py            PubMed / NCBI E-utilities
     sources/crossref.py          Crossref (DOIs, all disciplines)
+    sources/clinicaltrials.py    ClinicalTrials.gov (NCT, publication bias)
+    sources/openfda.py           FDA drug data incl. CDER (approvals, labels, FAERS)
+    sources/sec_edgar.py         SEC EDGAR filings full-text search
+    sources/patentsview.py       USPTO granted patents (needs an API key)
+    sources/socrata.py           Socrata portals; CDC dataset discovery
+    sources/cms.py               CMS dataset discovery
     agent.py                     dynamic tool + prompt assembly
     verify.py                    cross-source citation audit
 
@@ -74,6 +82,26 @@ that mean different things:
   retrieved. A different bug, equally disqualifying.
 - `unchecked` — unretrieved and the source was unreachable, so it is *not*
   cleared. Absence of a check is never treated as a pass.
+
+## Sources and what they are for
+
+| Source | Identifier | Answers |
+| --- | --- | --- |
+| `pubmed` | PMID | Published biomedical literature |
+| `crossref` | DOI | Any discipline, DOI resolution |
+| `clinicaltrials` | NCT | Trials incl. completed-but-unpublished |
+| `openfda` | NDA/ANDA/BLA | Approvals, labelling, adverse events (CDER data) |
+| `sec_edgar` | Accession | What a company told investors |
+| `uspto` | Patent no. | Prior art, exclusivity |
+| `cdc` | Dataset id | Surveillance datasets |
+| `cms` | Dataset id | Utilisation and spend datasets |
+
+`sec_edgar` and `uspto` need credentials (`SEC_CONTACT_EMAIL`,
+`PATENTSVIEW_API_KEY`) and report themselves unavailable without them, so a
+review runs on the rest rather than failing.
+
+**No provider has made a live request from the build environment** - every
+upstream host is blocked at network policy. See `sources/VERIFICATION.md`.
 
 ## Notes
 

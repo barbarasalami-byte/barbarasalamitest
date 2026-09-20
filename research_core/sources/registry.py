@@ -61,7 +61,16 @@ def unavailable_sources() -> dict[str, str]:
 
 def load_builtins() -> None:
     """Register the bundled providers. Safe to call repeatedly."""
-    from . import crossref, pubmed  # noqa: F401  (import triggers registration)
+    from . import (  # noqa: F401  (import triggers registration)
+        clinicaltrials,
+        cms,
+        crossref,
+        openfda,
+        patentsview,
+        pubmed,
+        sec_edgar,
+        socrata,
+    )
 
 
 def find_by_id_label(label: str) -> SourceProvider | None:
