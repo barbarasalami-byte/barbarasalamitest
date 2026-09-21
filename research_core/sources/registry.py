@@ -64,12 +64,15 @@ def load_builtins() -> None:
     from . import (  # noqa: F401  (import triggers registration)
         clinicaltrials,
         cms,
+        cms_data,
         crossref,
+        nih_reporter,
         openfda,
         patentsview,
         pubmed,
         sec_edgar,
         socrata,
+        uspto_assignments,
     )
 
 

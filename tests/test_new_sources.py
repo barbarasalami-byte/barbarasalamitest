@@ -9,7 +9,7 @@ import unittest
 
 from research_core.sources.clinicaltrials import _to_record as ctg_record
 from research_core.sources.cms import _to_record as cms_record
-from research_core.sources.openfda import _to_record as fda_record
+from research_core.sources.openfda import _approval_record
 from research_core.sources.patentsview import _to_record as patent_record
 from research_core.sources.sec_edgar import _to_record as sec_record
 from research_core.sources.socrata import CDC
@@ -63,29 +63,36 @@ class ClinicalTrialsTests(unittest.TestCase):
 
 class OpenFDATests(unittest.TestCase):
     def test_drugsfda_record(self):
-        r = fda_record(
+        r = _approval_record(
             {
                 "application_number": "NDA215256",
                 "sponsor_name": "Novo Nordisk",
-                "products": [{"brand_name": "WEGOVY"}],
+                "products": [{"brand_name": "WEGOVY", "te_code": "AB"}],
                 "openfda": {"generic_name": ["SEMAGLUTIDE"]},
                 "submissions": [{"submission_status_date": "20210604"}],
-            },
-            "drugsfda",
+            }
         )
         self.assertEqual(r.id, "NDA215256")
         self.assertEqual(r.title, "WEGOVY / SEMAGLUTIDE")
         self.assertEqual(r.year, "2021")
         self.assertIn("ApplNo=215256", r.url)
 
+    def test_orange_book_te_codes_are_surfaced(self):
+        r = _approval_record(
+            {
+                "application_number": "ANDA123456",
+                "products": [{"te_code": "AB"}, {"te_code": "AB"}, {"te_code": "BX"}],
+            }
+        )
+        self.assertIn("TE codes: AB, BX", r.abstract)
+
     def test_empty_products_does_not_crash(self):
-        # Regression: products may be absent or empty on label/event records.
-        r = fda_record({"application_number": "NDA1", "products": []}, "drugsfda")
+        # Regression: products may be absent or empty on some records.
+        r = _approval_record({"application_number": "NDA1", "products": []})
         self.assertEqual(r.id, "NDA1")
 
     def test_record_with_no_identifiers_is_still_titled(self):
-        r = fda_record({}, "event")
-        self.assertEqual(r.title, "(untitled FDA record)")
+        self.assertEqual(_approval_record({}).title, "(untitled)")
 
 
 class SECEdgarTests(unittest.TestCase):

@@ -62,16 +62,47 @@ class CitationAudit:
         return "\n".join(lines)
 
 
+def _namespace_peers(
+    registry: dict[str, SourceProvider], source: str
+) -> list[str]:
+    """Sources sharing an identifier namespace with `source`.
+
+    Several providers can read the same corpus through different endpoints -
+    the three SEC providers all cite accession numbers - so an identifier
+    retrieved by one is legitimately cited from any of them. `id_label` is the
+    namespace key.
+    """
+    label = registry[source].id_label.lower() if source in registry else ""
+    if not label:
+        return [source]
+    return [n for n, p in registry.items() if p.id_label.lower() == label]
+
+
 def extract_citations(
     text: str, providers: dict[str, SourceProvider] | None = None
 ) -> set[Citation]:
-    """Find every source identifier in the text, using each provider's patterns."""
-    found = set()
-    for name, provider in (providers or all_sources()).items():
+    """Find every source identifier in the text, using each provider's patterns.
+
+    One identifier yields one citation even when several providers recognise
+    it: sources sharing an `id_label` share a namespace, and the citation is
+    attributed to the first of them by name so the result is deterministic.
+    """
+    registry = providers if providers is not None else all_sources()
+    by_namespace: dict[tuple[str, str], str] = {}
+
+    for name, provider in registry.items():
+        label = provider.id_label.lower()
         for pattern in provider.id_patterns:
             for match in pattern.finditer(text):
-                found.add(Citation(source=name, id=match.group(1)))
-    return found
+                key = (label, match.group(1))
+                current = by_namespace.get(key)
+                if current is None or name < current:
+                    by_namespace[key] = name
+
+    return {
+        Citation(source=source, id=identifier)
+        for (_, identifier), source in by_namespace.items()
+    }
 
 
 def audit_citations(
@@ -88,7 +119,10 @@ def audit_citations(
     audit = CitationAudit(cited=extract_citations(result.report, registry))
 
     for citation in audit.cited:
-        if citation.id in result.retrieved_ids(citation.source):
+        # A namespace peer's retrieval counts: the same accession fetched by
+        # sec_submissions satisfies a citation attributed to sec_edgar.
+        peers = _namespace_peers(registry, citation.source)
+        if any(citation.id in result.retrieved_ids(peer) for peer in peers):
             continue
         audit.unretrieved.add(citation)
 

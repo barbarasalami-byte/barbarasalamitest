@@ -103,3 +103,153 @@ def _to_record(hit: dict[str, Any]) -> Record:
 
 
 register(SECEdgar(), replace=True)
+
+
+class SECSubmissions(JSONSource):
+    """A company's filing history from the documented submissions API.
+
+    Complements full-text search rather than replacing it. Full-text answers
+    "which filings mention semaglutide"; this answers "every filing Novo
+    Nordisk made". Queries take a CIK (10 digits, zero-padded) or a ticker.
+    """
+
+    name = "sec_submissions"
+    id_label = "ACCESSION"
+    id_patterns = [re.compile(r"\b(\d{10}-\d{2}-\d{6})\b")]
+    syntax_guide = """\
+### SEC EDGAR submissions (company filing history)
+
+Query by CIK or ticker, not by text:
+
+    CIK0000353278
+    NVO
+
+Returns the filer's recent filings with form type, date, and accession number.
+Use this when the question is about one company; use full-text search when the
+question is about a phrase. Forms worth knowing: 10-K annual, 10-Q quarterly,
+8-K material events (trial results, regulatory actions), 20-F/40-F foreign
+issuers, S-1 registration.
+
+A filing is the company's own assertion, made under legal obligation but not
+independently verified. Attribute it to the filer.\
+"""
+
+    BASE = "https://data.sec.gov/submissions"
+    RATE_PER_SECOND = 8.0
+    CONTACT_ENV = "SEC_CONTACT_EMAIL"
+
+    def available(self) -> tuple[bool, str]:
+        if not self.contact:
+            return False, "SEC_CONTACT_EMAIL not set; the SEC blocks anonymous traffic"
+        return True, ""
+
+    def _cik_url(self, identifier: str) -> str:
+        digits = "".join(c for c in str(identifier) if c.isdigit())
+        return f"{self.BASE}/CIK{digits.zfill(10)}.json"
+
+    def search(self, query: str, max_results: int = 25):  # type: ignore[override]
+        from .base import SearchOutcome
+
+        payload = self._get(self._cik_url(query))
+        records = _submission_records(payload, max_results)
+        recent = (payload.get("filings", {}) or {}).get("recent", {}) or {}
+        return SearchOutcome(
+            source=self.name,
+            query=query,
+            total_matches=len(recent.get("accessionNumber", []) or []),
+            records=records,
+        )
+
+    def fetch(self, ids: list[str]) -> list[Record]:
+        # Accession numbers are not addressable on their own here; the caller
+        # already holds the metadata from search.
+        return []
+
+    def exists(self, record_id: str) -> bool:
+        # Structural check only: this API is keyed by company, not accession.
+        return bool(re.fullmatch(r"\d{10}-\d{2}-\d{6}", record_id))
+
+    def _search_params(self, query: str, max_results: int) -> dict[str, Any]:
+        raise NotImplementedError  # search() is overridden
+
+    def _records_from(self, payload: dict[str, Any]) -> list[Record]:
+        return _submission_records(payload, 25)
+
+    def _fetch_one(self, record_id: str) -> Record | None:
+        return None
+
+
+def _submission_records(payload: dict[str, Any], limit: int) -> list[Record]:
+    """Flatten the parallel-array `filings.recent` structure into records."""
+    name = payload.get("name", "")
+    cik = str(payload.get("cik", ""))
+    recent = (payload.get("filings", {}) or {}).get("recent", {}) or {}
+
+    accessions = recent.get("accessionNumber", []) or []
+    forms = recent.get("form", []) or []
+    dates = recent.get("filingDate", []) or []
+    docs = recent.get("primaryDocument", []) or []
+
+    records = []
+    for i, accession in enumerate(accessions[:limit]):
+        form = forms[i] if i < len(forms) else ""
+        filed = dates[i] if i < len(dates) else ""
+        doc = docs[i] if i < len(docs) else ""
+        bare = accession.replace("-", "")
+        records.append(
+            Record(
+                source="sec_submissions",
+                id=accession,
+                title=f"{form} - {name}" if form and name else (name or form),
+                authors=[name] if name else [],
+                year=str(filed)[:4],
+                venue="SEC EDGAR",
+                doc_types=[form] if form else [],
+                abstract=f"Filed: {filed} | Form: {form} | CIK: {cik}",
+                url=(
+                    f"https://www.sec.gov/Archives/edgar/data/{cik.lstrip('0')}/{bare}/{doc}"
+                    if cik and doc
+                    else ""
+                ),
+            )
+        )
+    return records
+
+
+class SECInsider(SECSubmissions):
+    """Insider transactions - Forms 3, 4 and 5 from a company's submissions.
+
+    Form 4 filings cluster before clinical readouts and earnings. The signal is
+    in the pattern, not one filing: a single sale may be a scheduled 10b5-1
+    disposal with no informational content at all.
+    """
+
+    name = "sec_insider"
+    syntax_guide = """\
+### SEC insider transactions (Forms 3, 4, 5)
+
+Query by CIK or ticker; results are filtered to ownership forms. Form 3 is an
+initial statement, Form 4 a change in ownership, Form 5 an annual catch-up.
+
+Never read a single Form 4 as a signal. Many sales are pre-scheduled 10b5-1
+plans with no relation to non-public information. A cluster of unscheduled
+purchases ahead of a readout is a pattern worth reporting; one disposal is not.\
+"""
+
+    FORMS = {"3", "4", "5", "3/A", "4/A", "5/A"}
+
+    def search(self, query: str, max_results: int = 25):  # type: ignore[override]
+        outcome = super().search(query, max_results * 4)
+        filtered = [
+            r for r in outcome.records if any(f in self.FORMS for f in r.doc_types)
+        ][:max_results]
+        for record in filtered:
+            record.source = self.name
+        outcome.source = self.name
+        outcome.records = filtered
+        outcome.total_matches = len(filtered)
+        return outcome
+
+
+register(SECSubmissions(), replace=True)
+register(SECInsider(), replace=True)
